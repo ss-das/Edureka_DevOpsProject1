@@ -7,19 +7,25 @@
     service: name=docker state=started
 
   - name: create the docker image
-    command: docker build -t EdurekaProject1:CICD .
+    command: docker build -t project1:CICD .
     args:
       chdir: /var/lib/jenkins/workspace/1.ContinuousIntegration/website
 
-  - name: create tag to image
-    command: docker tag EdurekaProject1:CICD ssdocs/EdurekaProject1:CICD
 
-  - name: login to docker
-    command: docker login --username ssdocs  --password #Qwe1234asd
+  - name: Log into DockerHub
+    docker_login:
+     username: kubedas
+     password: #Qwe1234
 
-  - name: push image on to dockerhub
-    command: docker push ssdocs/EdurekaProject1:CICD
+  
+  - name: Tag and push to docker hub
+    docker_image:
+     name: project1
+     repository: kubedas/project1 
+     tag: CICD
+     push: yes
+
 
   - name: remove docker images form ansible server
-    command: docker rmi EdurekaProject1:CICD ssdocs/EdurekaProject1:CICD
+    command: docker rmi -f kubedas/project1:CICD project1
     ignore_errors: yes
